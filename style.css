@@ -127,10 +127,13 @@ body.hide-header .header {
 
 .header .title {
   font-size: 3rem;
-  background: linear-gradient(to right, #ff7eb3, #ff758c, #ff6a00);
+  font-weight: bold;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6, #ff6bcb, #f43f5e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+ 
 }
+
 
 
 
@@ -284,46 +287,45 @@ body.hide-header .header {
   height: 12px;
   width: 100%;
   border-radius: 0.6rem;
-  background: linear-gradient(45deg, #ff0066, #00b3ff, #8a2be2, #ff0066);
-  background-size: 400% 400%;
-  animation: smoothGradient 3s ease-in-out infinite, subtleFlicker 0.75s infinite alternate;
+  background: linear-gradient(90deg, #0057b7, #ff007f, #0057b7);
+  background-size: 300% 300%;
+  animation: smoothGradient 3s linear infinite, waveEffect 1.5s ease-in-out infinite;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(255, 0, 102, 0.6), 0 0 30px rgba(0, 179, 255, 0.6), 0 0 40px rgba(138, 43, 226, 0.6);
+  box-shadow: 0 0 15px rgba(0, 87, 183, 0.6), 
+              0 0 25px rgba(255, 0, 127, 0.6), 
+              0 0 35px rgba(0, 87, 183, 0.6);
 }
 
 @keyframes smoothGradient {
-  0% {
-    background-position: 0% 0%;
-  }
-  50% {
-    background-position: 100% 100%;
-  }
-  100% {
-    background-position: 0% 0%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-@keyframes subtleFlicker {
-  0% {
-    opacity: 1;
-  }
-  20% {
-    opacity: 0.9;
-  }
-  40% {
-    opacity: 1;
-  }
-  60% {
-    opacity: 0.8;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-  }
+@keyframes waveEffect {
+  0% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(1.2); opacity: 0.85; }
+  100% { transform: scaleY(1); opacity: 1; }
 }
+
+.chat-list .message .loading-indicator .loading-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  filter: blur(12px);
+  animation: shineEffect 1.2s linear infinite;
+}
+
+@keyframes shineEffect {
+  0% { left: -100%; }
+  100% { left: 150%; }
+}
+
 
 
 
