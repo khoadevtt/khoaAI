@@ -1,0 +1,569 @@
+/* Import Google Font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+.header h3 {
+  position: relative;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1); /* Trong suốt */
+  padding: 12px 20px;
+  border-radius: 10px;
+  backdrop-filter: blur(10px); /* Hiệu ứng kính mờ */
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+/* Căn chỉnh logo ở góc trên bên phải */
+
+
+/* Viền màu chạy */
+.header h3::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  border-radius: 12px;
+  background: linear-gradient(120deg, #ff7eb3, #ffbf00, #00eaff, #ff7eb3);
+  background-size: 300% 300%;
+  z-index: -1;
+  animation: borderAnimation 3s linear infinite;
+}
+
+/* Hiệu ứng màu chạy */
+@keyframes borderAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
+
+:root {
+  /* Dark mode colors */
+  --text-color: #E3E3E3;
+  --subheading-color: #828282;
+  --placeholder-color: #A6A6A6;
+  --primary-color: #242424;
+  --secondary-color: #383838;
+  --secondary-hover-color: #444;
+}
+
+.light_mode {
+  /* Light mode colors */
+  --text-color: #222;
+  --subheading-color: #A0A0A0;
+  --placeholder-color: #6C6C6C;
+  --primary-color: #FFF;
+  --secondary-color: #E9EEF6;
+  --secondary-hover-color: #DBE1EA;
+}
+
+body {
+  background: var(--primary-color);
+  background: #fff; /* Màu nền luôn là trắng */
+  color: #000; /* Chữ luôn là đen */
+}
+
+.header, .chat-list .message, .typing-form {
+  margin: 0 auto;
+  max-width: 980px;
+}
+#mic-button.active {
+  color: red; /* Đổi màu đỏ khi đang nghe */
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.header {
+  margin-top: 6vh;
+  padding: 1rem;
+  overflow-x: hidden;
+}
+
+body.hide-header .header {
+  margin: 0;
+  display: none;
+}
+
+.header :where(.title, .subtitle) {
+  color: var(--text-color);
+  font-weight: 500;
+  line-height: 4rem;
+}
+.facebook-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  text-decoration: none;
+  color: #1877F2; /* Màu Facebook */
+  font-size: 28px;
+}
+
+.facebook-icon:hover {
+  color: #0d5bd7; /* Màu đậm hơn khi hover */
+}
+
+.header {
+  display: flex;
+  justify-content: center; /* Căn giữa ngang */
+  align-items: center; /* Căn giữa dọc */
+  height: 100vh; /* Chiều cao 100% viewport */
+}
+
+.header .title {
+  font-size: 3rem;
+  background: linear-gradient(to right, #ff7eb3, #ff758c, #ff6a00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+
+.header .subtitle {
+  font-size: 2.6rem;
+  color: var(--subheading-color);
+}
+
+.suggestion-list {
+  width: 100%;
+  list-style: none;
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 9.5vh;
+  overflow: hidden;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.suggestion-list .suggestion {
+  cursor: pointer;
+  padding: 1.25rem;
+  width: 222px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  border-radius: 0.75rem;
+  justify-content: space-between;
+  background: var(--secondary-color);
+  transition: 0.2s ease;
+}
+
+.suggestion-list .suggestion:hover {
+  background: var(--secondary-hover-color);
+}
+
+.suggestion-list .suggestion :where(.text, .icon) {
+  font-weight: 400;
+  color: var(--text-color);
+}
+
+.suggestion-list .suggestion .icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  font-size: 1.3rem;
+  margin-top: 2.5rem;
+  align-self: flex-end;
+  align-items: center;
+  border-radius: 50%;
+  justify-content: center;
+  color: var(--text-color);
+  background: var(--primary-color);
+}
+
+.chat-list {
+  padding: 2rem 1rem 12rem;
+  max-height: 100vh;
+  overflow-y: auto;
+  scrollbar-color: #999 transparent;
+}
+.chat-list .message {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 2px solid #ccc; /* Đổi màu viền thành màu xám nhẹ */
+  border-radius: 10px;
+ 
+}
+
+
+
+.chat-list .message.incoming {
+  margin-top: 1.5rem;
+}
+
+.chat-list .message .message-content {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  align-items: center;
+}
+
+.chat-list .message .text {
+  color: var(--text-color);
+  white-space: pre-wrap;
+}
+
+.chat-list .message.error .text {
+  color: #e55865;
+}
+
+.chat-list .message.loading .text {
+  display: none;
+}
+
+.chat-list .message .avatar {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  align-self: flex-start;
+}
+
+.chat-list .message.loading .avatar {
+  animation: rotate 3s linear infinite;
+}
+
+
+
+.chat-list .message .icon {
+  color: var(--text-color);
+  cursor: pointer;
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  font-size: 1.25rem;
+  margin-left: 3.5rem;
+  visibility: hidden;
+}
+
+.chat-list .message .icon.hide {
+  visibility: hidden;
+}
+
+.chat-list .message:not(.loading, .error):hover .icon:not(.hide){
+  visibility: visible;
+}
+
+.chat-list .message .icon:hover {
+  background: var(--secondary-hover-color);
+}
+
+.chat-list .message .loading-indicator {
+  display: none;
+  gap: 0.8rem;
+  width: 100%;
+  flex-direction: column;
+}
+
+.chat-list .message.loading .loading-indicator {
+  display: flex;
+}
+
+.chat-list .message .loading-indicator .loading-bar {
+  height: 12px;
+  width: 100%;
+  border-radius: 0.6rem;
+  background: linear-gradient(45deg, #ff0066, #00b3ff, #8a2be2, #ff0066);
+  background-size: 400% 400%;
+  animation: smoothGradient 3s ease-in-out infinite, subtleFlicker 0.75s infinite alternate;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255, 0, 102, 0.6), 0 0 30px rgba(0, 179, 255, 0.6), 0 0 40px rgba(138, 43, 226, 0.6);
+}
+
+@keyframes smoothGradient {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes subtleFlicker {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+
+.chat-list .message .loading-indicator .loading-bar:last-child {
+  width: 70%;
+  filter: blur(1px);
+}
+
+
+.typing-area {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  padding: 1rem;
+  background: var(--primary-color);
+}
+
+.typing-area :where(.typing-form, .action-buttons) {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.typing-form .input-wrapper {
+  width: 100%;
+  height: 56px;
+  display: flex;
+  position: relative;
+}
+
+.typing-form .typing-input {
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 1rem;
+  color: var(--text-color);
+  padding: 1.1rem 4rem 1.1rem 1.5rem;
+  border-radius: 100px;
+  background: var(--secondary-color);
+}
+
+.typing-form .typing-input:focus {
+  background: var(--secondary-hover-color);
+}
+
+.typing-form .typing-input::placeholder {
+  color: var(--placeholder-color);
+}
+
+.typing-area .icon {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  font-size: 1.4rem;
+  color: var(--text-color);
+  align-items: center;
+  justify-content: center;
+  background: var(--secondary-color);
+  transition: 0.2s ease;
+}
+
+.typing-area .icon:hover {
+  background: var(--secondary-hover-color);
+}
+
+.typing-form #send-message-button {
+  position: absolute;
+  right: 0;
+  outline: none;
+  border: none;
+  transform: scale(0);
+  background: transparent;
+  transition: transform 0.2s ease;
+}
+
+.typing-form .typing-input:valid ~ #send-message-button {
+  transform: scale(1);
+}
+
+.typing-area .disclaimer-text {
+  text-align: center;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  color: var(--placeholder-color);
+}
+
+
+/* Responsive styles for small screens */
+@media (max-width: 768px) {
+  /* Header adjustments */
+  .header :is(.title, .subtitle) {
+    font-size: 1.6rem; /* Giảm kích thước tiêu đề để tránh tràn màn hình */
+    line-height: 2.2rem;
+    text-align: center; /* Căn giữa tiêu đề để tạo sự cân đối */
+  }
+
+  .header .subtitle {
+    font-size: 1.4rem;
+    margin-top: 0.3rem; /* Tạo khoảng cách hợp lý với tiêu đề */
+  }
+
+  /* Typing area adjustments */
+  .typing-area {
+    padding: 0.8rem; /* Giảm padding để tận dụng không gian */
+  }
+
+  .typing-area :where(.typing-form, .action-buttons) {
+    gap: 0.4rem; /* Điều chỉnh khoảng cách giữa các phần tử */
+  }
+
+  .typing-form .input-wrapper {
+    height: 42px; /* Giảm chiều cao để phù hợp hơn với màn hình nhỏ */
+  }
+
+  .typing-form .typing-input {
+    padding: 0.7rem 2.6rem 0.7rem 1rem; /* Điều chỉnh padding để không bị chật */
+    font-size: 0.95rem; /* Kích thước chữ vừa phải */
+  }
+
+  /* Icon size adjustments */
+  .typing-area .icon {
+    height: 36px;
+    width: 36px; /* Giảm kích thước icon để vừa vặn hơn */
+  }
+
+  /* Disclaimer text adjustments */
+  .typing-area .disclaimer-text {
+    font-size: 0.75rem; /* Giữ văn bản nhỏ nhưng dễ đọc */
+    margin-top: 0.5rem;
+    text-align: center; /* Căn giữa để hiển thị gọn gàng hơn */
+  }
+}
+
+
+
+/* Đảm bảo khung chat không bị tràn */
+.message {
+  max-width: 90%; /* Giới hạn độ rộng tin nhắn */
+  word-wrap: break-word; /* Xuống dòng khi cần */
+  overflow-wrap: break-word;
+}
+
+/* Giữ code trong khung, cho phép cuộn ngang nếu cần */
+pre {
+  background: #2b2b2b;
+  color: #f8f8f2;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto; /* Kích hoạt cuộn ngang */
+  white-space: pre-wrap; /* Cho phép xuống dòng */
+  word-break: break-word;
+  max-width: 100%; /* Giữ code trong khung chat */
+  border: 1px solid #444;
+}
+
+/* Cố định kích thước khối code trong chat */
+code {
+  background: #2d2d2d; /* Màu xám đậm */
+  color: #cfc2cc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.hljs-keyword { color: #569CD6; } /* Từ khóa */
+.hljs-string { color: #CE9178; } /* Chuỗi */
+.hljs-comment { color: #6A9955; } /* Comment */
+.hljs-function { color: #DCDCAA; } /* Hàm */
+.hljs-number { color: #B5CEA8; } /* Số */
+
+.title {
+  opacity: 0; /* Ẩn chữ ban đầu */
+  transform: translateY(20px); /* Đẩy xuống một chút */
+  animation: fadeInUp 1s ease-out forwards; /* Chạy animation */
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.modal {
+  display: none; /* Ẩn modal khi trang vừa load */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal button {
+  margin: 10px;
+  padding: 8px 15px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+
+#confirmDelete {
+  background: rgb(30, 189, 59);
+  color: white;
+}
+
+#cancelDelete {
+  background: rgb(186, 45, 45);
+  color: white;
+}
+.model-icon {
+  width: 50px;  /* Điều chỉnh kích thước */
+  height: 50px;
+  vertical-align: middle; /* Căn giữa với chữ */
+  margin-left: 5px; /* Tạo khoảng cách với chữ */
+}
+.disclaimer-text .model-icon {
+  width: 30px;  /* Điều chỉnh kích thước */
+  height: 30px;
+  vertical-align: middle; /* Căn giữa với chữ */
+  margin-left: 5px; /* Tạo khoảng cách với chữ */
+}
