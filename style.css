@@ -272,9 +272,25 @@ body.hide-header .header {
   background: var(--secondary-hover-color);
 }
 
+
+/* Định dạng icon khi hover */
+.chat-list .message:not(.loading, .error):hover .icon:not(.hide) {
+  visibility: visible;
+  transform: scale(1.08); /* Tăng nhẹ kích thước icon */
+  transition: transform 0.15s ease-in-out; /* Rút ngắn thời gian transition */
+}
+
+.chat-list .message .icon:hover {
+  background: var(--secondary-hover-color);
+  border-radius: 50%;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2); /* Tăng bóng đổ để tạo chiều sâu */
+  transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* Phần loading indicator */
 .chat-list .message .loading-indicator {
   display: none;
-  gap: 0.8rem;
+  gap: 1rem; /* Tăng khoảng cách giữa các phần tử */
   width: 100%;
   flex-direction: column;
 }
@@ -286,15 +302,13 @@ body.hide-header .header {
 .chat-list .message .loading-indicator .loading-bar {
   height: 12px;
   width: 100%;
-  border-radius: 0.6rem;
-  background: linear-gradient(90deg, #0057b7, #ff007f, #0057b7);
-  background-size: 300% 300%;
-  animation: smoothGradient 3s linear infinite, waveEffect 1.5s ease-in-out infinite;
+  border-radius: 1rem;
+  background: linear-gradient(90deg, #4e73df, #ff56a1, #4e73df);
+  background-size: 400% 400%;
+  animation: smoothGradient 4s ease-in-out infinite, waveEffect 1.5s ease-in-out infinite;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 15px rgba(0, 87, 183, 0.6), 
-              0 0 25px rgba(255, 0, 127, 0.6), 
-              0 0 35px rgba(0, 87, 183, 0.6);
+ 
 }
 
 @keyframes smoothGradient {
@@ -305,10 +319,11 @@ body.hide-header .header {
 
 @keyframes waveEffect {
   0% { transform: scaleY(1); opacity: 1; }
-  50% { transform: scaleY(1.2); opacity: 0.85; }
+  50% { transform: scaleY(1.05); opacity: 0.75; }
   100% { transform: scaleY(1); opacity: 1; }
 }
 
+/* Hiệu ứng shine */
 .chat-list .message .loading-indicator .loading-bar::after {
   content: "";
   position: absolute;
@@ -316,15 +331,18 @@ body.hide-header .header {
   left: -100%;
   width: 50%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.4);
-  filter: blur(12px);
-  animation: shineEffect 1.2s linear infinite;
+  background: rgba(255, 255, 255, 0.5); /* Tăng độ sáng của ánh sáng */
+  filter: blur(12px); /* Tinh chỉnh độ mờ cho hiệu ứng ánh sáng mềm mại */
+  animation: shineEffect 1.5s ease-in-out infinite;
 }
 
 @keyframes shineEffect {
-  0% { left: -100%; }
-  100% { left: 150%; }
+  0% { left: -100%; opacity: 0.8; }
+  50% { left: 50%; opacity: 0.3; }
+  100% { left: 150%; opacity: 0.8; }
 }
+
+
 
 
 
@@ -422,8 +440,8 @@ body.hide-header .header {
 @media (max-width: 768px) {
   /* Header adjustments */
   .header :is(.title, .subtitle) {
-    font-size: 1.6rem; /* Giảm kích thước tiêu đề để tránh tràn màn hình */
-    line-height: 2.2rem;
+    font-size: 2.7rem; /* Giảm kích thước tiêu đề để tránh tràn màn hình */
+    line-height: 2.7rem;
     text-align: center; /* Căn giữa tiêu đề để tạo sự cân đối */
   }
 
@@ -475,6 +493,7 @@ body.hide-header .header {
 
 /* Giữ code trong khung, cho phép cuộn ngang nếu cần */
 pre {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   background: #2b2b2b;
   color: #f8f8f2;
   padding: 12px;
@@ -528,39 +547,67 @@ code {
   top: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7); /* Tối nền */
   justify-content: center;
   align-items: center;
 }
 
 .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
 }
 
 .modal button {
   margin: 10px;
-  padding: 8px 15px;
+  padding: 12px 20px;
+  font-size: 16px;
   cursor: pointer;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+  outline: none;
+  position: relative;
+  background: linear-gradient(45deg, #1a73e8, #e91e63); /* Màu xanh dương và hồng trộn lẫn */
+  background-size: 200% 200%;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  animation: gradientAnimation 3s ease infinite; /* Animation chạy màu */
 }
 
 #confirmDelete {
-  background: rgb(30, 189, 59);
-  color: white;
+  background: linear-gradient(45deg, #1a73e8, #e91e63); /* Xanh dương và hồng */
 }
 
 #cancelDelete {
-  background: rgb(186, 45, 45);
-  color: white;
+  background: linear-gradient(45deg, #e91e63, #1a73e8); /* Hồng và xanh dương */
 }
+
+.modal button:hover {
+  
+  background-position: 200% 200%; /* Chạy hiệu ứng màu nền */
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .model-icon {
-  width: 50px;  /* Điều chỉnh kích thước */
-  height: 50px;
+  width: 100px;  /* Điều chỉnh kích thước */
+  height: 100px;
   vertical-align: middle; /* Căn giữa với chữ */
   margin-left: 5px; /* Tạo khoảng cách với chữ */
 }
@@ -569,4 +616,32 @@ code {
   height: 30px;
   vertical-align: middle; /* Căn giữa với chữ */
   margin-left: 5px; /* Tạo khoảng cách với chữ */
+}
+/* Ví dụ CSS */
+.hljs {
+  background-color: #2d2d2d;
+  color: #f8f8f2;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.mathjax-inline {
+  color: #3498db;  /* Màu sắc cho công thức toán học inline */
+}
+
+.mathjax-display {
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+/* Thêm hiệu ứng mượt mà khi ẩn hiện icon */
+.icon {
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+
+.icon.hide {
+  opacity: 0;
 }
