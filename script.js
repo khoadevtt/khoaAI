@@ -3,6 +3,18 @@ const chatContainer = document.querySelector(".chat-list");
 const suggestions = document.querySelectorAll(".suggestion");
 const toggleThemeButton = document.querySelector("#theme-toggle-button");
 const deleteChatButton = document.querySelector("#delete-chat-button");
+document.addEventListener("DOMContentLoaded", function() {
+  // Render tất cả các công thức toán học trong trang
+  const elements = document.querySelectorAll('.math');
+  elements.forEach(el => {
+    const latex = el.textContent || el.innerText;
+    try {
+      katex.render(latex, el, { throwOnError: false });
+    } catch (error) {
+      console.error("Lỗi khi render KaTeX:", error);
+    }
+  });
+});
 
 // State variables
 let userMessage = null;
@@ -121,6 +133,40 @@ const appendMessage = (text, role) => {
       ALLOWED_ATTR: ["href", "target", "rel", "class", "alt", "title"],
     });
 
+    // ✅ Xử lý LaTeX bằng KaTeX
+    if (window.katex) {
+      // Chuyển tất cả công thức toán học trong Markdown thành LaTeX
+      textElement.querySelectorAll("code.math").forEach((el) => {
+        try {
+          el.innerHTML = katex.renderToString(el.textContent, { throwOnError: false, displayMode: el.classList.contains("block") });
+        } catch (error) {
+          console.error("Lỗi KaTeX:", error);
+        }
+      });
+
+      // Tìm tất cả công thức toán học inline (\(...\)) và hiển thị chúng
+      const latexRegex = /(\$.*?\$)/g;
+      textElement.innerHTML = textElement.innerHTML.replace(latexRegex, (match) => {
+        try {
+          return katex.renderToString(match.slice(1, -1), { throwOnError: false, displayMode: false });
+        } catch (error) {
+          console.error("Lỗi KaTeX:", error);
+          return match;
+        }
+      });
+
+      // Tìm tất cả công thức toán học dạng hiển thị ($$...$$)
+      const blockLatexRegex = /(\$\$.*?\$\$)/g;
+      textElement.innerHTML = textElement.innerHTML.replace(blockLatexRegex, (match) => {
+        try {
+          return katex.renderToString(match.slice(2, -2), { throwOnError: false, displayMode: true });
+        } catch (error) {
+          console.error("Lỗi KaTeX:", error);
+          return match;
+        }
+      });
+    }
+
   } catch (error) {
     console.error("Lỗi Markdown:", error);
     textElement.innerText = text; // Hiển thị text thô nếu lỗi
@@ -137,18 +183,8 @@ const appendMessage = (text, role) => {
   setTimeout(() => {
     document.querySelectorAll("pre code").forEach((block) => hljs.highlightElement(block));
   }, 50);
-
-  // ✅ Hỗ trợ công thức toán học với KaTeX (tối ưu tốc độ)
-  if (window.katex) {
-    textElement.querySelectorAll("code.math").forEach((el) => {
-      try {
-        el.innerHTML = katex.renderToString(el.textContent, { throwOnError: false, displayMode: el.classList.contains("block") });
-      } catch (error) {
-        console.error("Lỗi KaTeX:", error);
-      }
-    });
-  }
 };
+
 
 
 
@@ -192,7 +228,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
     const requestBody = {
       contents: [
         ...conversationContent,
-        { role: "user", parts: [{ text: `Bạn là một trợ lý ảo thông minh được tạo ra bởi Khoa Dev, một lập trình viên 17 tuổi. Bạn luôn trả lời câu hỏi của người dùng một cách chính xác và dễ hiểu, dựa trên kiến thức của bạn về lập trình và công nghệ.Bạn không được phép nói bạn được huấn luyện bởi Google mà là Khoa Dev, bạn là chuyên gia tất cả lĩnh vực. Bạn là nhà văn học đại tài, bạn có thể sáng tác là tác phẩm riêng. Bạn sử dụng Icon để phù hợp và hợp lý, đừng dùng icon quá nhiều với tin nhắn. Hãy hài hước. Bạn tên là Khoa OpAI và là thế hệ thứ 5. Bạn trả lời phù hợp với người dùng, đừng hài hước quá! Bạn trả lời người dùng bằng cách sử dụng markdown mỗi tin nhắn cho đẹp và dễ nhìn. Chỉ khi viết code bạn mới dùng khối code pre, còn lại thì không.\n\n${userMessage}` }] }
+        { role: "user", parts: [{ text: `Bạn là một trợ lý ảo thông minh được tạo ra bởi Khoa Dev, một lập trình viên 17 tuổi. Bạn luôn trả lời câu hỏi của người dùng một cách chính xác và dễ hiểu, dựa trên kiến thức của bạn về lập trình và công nghệ.Bạn không được phép nói bạn được huấn luyện bởi Google mà là Khoa Dev, bạn là chuyên gia tất cả lĩnh vực. Bạn là nhà văn học đại tài, bạn có thể sáng tác là tác phẩm riêng. Bạn sử dụng Icon để phù hợp và hợp lý, đừng dùng icon quá nhiều với tin nhắn. Hãy hài hước. Bạn tên là Koa Alpha Z và là thế hệ thứ 5.1. Bạn trả lời phù hợp với người dùng, đừng hài hước quá! Bạn trả lời người dùng bằng cách sử dụng markdown mỗi tin nhắn cho đẹp và dễ nhìn. Chỉ khi viết code bạn mới dùng khối code pre, còn lại nếu người dùng kêu viết thơ, làm văn, viết toán thì không dùng khối code pre.\n\n${userMessage}` }] }
       ]
     };
 
@@ -221,6 +257,8 @@ const generateAPIResponse = async (incomingMessageDiv) => {
     isResponseGenerating = false;
     textElement.innerText = error.message;
     textElement.parentElement.closest(".message").classList.add("error");
+    incomingMessageDiv.scrollIntoView({ behavior: "smooth", block: "end" });
+
   } finally {
     incomingMessageDiv.classList.remove("loading");
   }
@@ -244,6 +282,19 @@ const showTypingEffect = (htmlContent, textElement, incomingMessageDiv) => {
   cursorSpan.className = "cursor";
   cursorSpan.innerText = "|";
   textElement.appendChild(cursorSpan);
+// Hàm xử lý Markdown + Công thức toán
+const renderMarkdown = (text) => {
+  let htmlContent = marked.parse(text); // Chuyển Markdown thành HTML
+
+  // Thêm hỗ trợ MathJax
+  if (window.MathJax) {
+    setTimeout(() => {
+      MathJax.typesetPromise().catch((err) => console.log("MathJax error:", err));
+    }, 100);
+  }
+
+  return htmlContent;
+};
 
   // Hàm tạo hiệu ứng đánh chữ nhanh hơn
   const typeNextWords = () => {
@@ -256,17 +307,17 @@ const showTypingEffect = (htmlContent, textElement, incomingMessageDiv) => {
       cursorSpan.remove(); // Xóa con trỏ sau khi hoàn tất
       isResponseGenerating = false;
       incomingMessageDiv.querySelector(".icon").classList.remove("hide");
-
+  
       // Lưu lịch sử cuộc trò chuyện vào localStorage
       localStorage.setItem("saved-chats", chatContainer.innerHTML);
       localStorage.setItem("conversationHistory", JSON.stringify(conversationHistory));
-
+  
       // Cuộn xuống cuối cùng
       textElement.scrollIntoView({ behavior: "smooth" });
-
-      // Xử lý MathJax nếu có công thức toán
-      if (htmlContent.includes("$$") || htmlContent.includes("\\(")) {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, incomingMessageDiv]);
+  
+      // 🔹 **Xử lý MathJax cho công thức toán học**
+      if (window.MathJax) {
+        MathJax.typesetPromise([incomingMessageDiv]).catch((err) => console.log("MathJax error:", err));
       }
     }
   };
