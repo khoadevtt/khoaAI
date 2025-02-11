@@ -83,53 +83,106 @@ const appendMessage = (text, role) => {
       smartypants: true,
       headerIds: false,
       langPrefix: "hljs language-",
-      highlight: (code, lang) => {
-        try {
-          return lang && hljs.getLanguage(lang)
-            ? hljs.highlight(code, { language: lang }).value
-            : hljs.highlightAuto(code).value;
-        } catch (err) {
-          console.error("Lỗi highlight:", err);
-          return code;
-        }
-      },
+      
     });
     window.markedOptionsSet = true;
   }
 
-  try {
-    // Kiểm tra xem văn bản có phải là mã hay không
-    if (isCode(text)) {
-      // ✅ Nếu là mã, bọc vào trong <pre><code>
-      text = `<pre><code>${text}</code></pre>`;
-    } else {
-      // ✅ Nếu là văn bản (như thơ), xử lý như văn bản thông thường
-      text = convertEmojisToTwemoji(text);
-      text = autoConvertURLs(text);
-      text = handleTaskLists(text);
-      let parsedHtml = marked.lexer(text);
-      text = parseMarkdownTokens(parsedHtml);
+  async function processText(text, textElement) {
+    try {
+      // Kiểm tra và xử lý mã
+      if (isCode(text)) {
+        text = wrapCode(text);
+      } else {
+        text = await processTextContent(text);
+      }
+  
+      // Sanitize HTML để ngăn ngừa XSS
+      textElement.innerHTML = DOMPurify.sanitize(text, {
+        ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "pre", "code", "blockquote", "ul", "ol", "li", "br", "p", "span", "sup", "sub", "h1", "h2", "h3", "h4", "h5", "h6", "table", "thead", "tbody", "tr", "th", "td", "del", "mark", "ins"],
+        ALLOWED_ATTR: ["href", "target", "rel", "class", "alt", "title"]
+      });
+  
+      // Xử lý LaTeX với KaTeX (nếu có)
+      if (window.katex) {
+        renderLaTeX(textElement);
+      }
+  
+    } catch (error) {
+      console.error("Lỗi Markdown:", error);
+      textElement.innerText = text; // Hiển thị văn bản thô nếu có lỗi
     }
-
-    // ✅ Sanitize HTML để ngăn ngừa XSS
-    textElement.innerHTML = DOMPurify.sanitize(text, {
-      ALLOWED_TAGS: [
-        "b", "i", "em", "strong", "a", "pre", "code", "blockquote", "ul", "ol", "li",
-        "br", "p", "span", "sup", "sub", "h1", "h2", "h3", "h4", "h5", "h6",
-        "table", "thead", "tbody", "tr", "th", "td", "del", "mark", "ins"
-      ],
-      ALLOWED_ATTR: ["href", "target", "rel", "class", "alt", "title"],
-    });
-
-    // ✅ Xử lý LaTeX với KaTeX
-    if (window.katex) {
-      renderLaTeX(textElement);
-    }
-
-  } catch (error) {
-    console.error("Lỗi Markdown:", error);
-    textElement.innerText = text; // Hiển thị văn bản thô nếu có lỗi
   }
+  
+  function wrapCode(text) {
+    return `<pre><code>${text}</code></pre>`;
+  }
+  
+  // Hàm tối ưu để wrap code
+function wrapCode(text) {
+  return `<pre><code>${text}</code></pre>`;
+}
+
+// Các hàm xử lý phụ được cải tiến (cần phải tự viết thêm hoặc sử dụng thư viện ngoài)
+async function convertEmojisToTwemoji(text) {
+  // Thực hiện chuyển đổi Emoji thành Twemoji (bằng thư viện hoặc API)
+  // Ví dụ: sử dụng API của Twemoji hoặc một thư viện emoji chuyển đổi.
+  return text; // Placeholder
+}
+
+async function autoConvertURLs(text) {
+  // Tự động chuyển đổi URL thành liên kết
+  const urlPattern = /https?:\/\/[^\s]+/g;
+  return text.replace(urlPattern, (url) => `<a href="${url}">${url}</a>`);
+}
+
+async function handleTaskLists(text) {
+  // Xử lý các danh sách tác vụ (task lists) Markdown thành HTML
+  const taskListPattern = /- \[([ xX])\] (.+)/g;
+  return text.replace(taskListPattern, (match, p1, p2) => {
+    const checked = p1.toLowerCase() === 'x' ? 'checked' : '';
+    return `<li><input type="checkbox" ${checked}> ${p2}</li>`;
+  });
+}
+
+// Chuyển đổi Markdown thành HTML
+async function parseMarkdownTokens(tokens) {
+  let result = '';
+  tokens.forEach(token => {
+    if (token.type === 'heading') {
+      result += `<h${token.depth}>${token.text}</h${token.depth}>`;
+    } else if (token.type === 'paragraph') {
+      result += `<p>${token.text}</p>`;
+    } else if (token.type === 'list') {
+      const listType = token.ordered ? 'ol' : 'ul';
+      result += `<${listType}>${token.items.map(item => `<li>${item.text}</li>`).join('')}</${listType}>`;
+    }
+    // Có thể thêm nhiều loại token khác nếu cần
+  });
+  return result;
+}
+
+// Hàm chính xử lý toàn bộ nội dung văn bản
+async function processTextContent(text) {
+  // Chuyển biểu tượng cảm xúc thành Twemoji
+  text = await convertEmojisToTwemoji(text);
+
+  // Tự động chuyển đổi URL thành liên kết
+  text = await autoConvertURLs(text);
+
+  // Xử lý các danh sách tác vụ (task lists)
+  text = await handleTaskLists(text);
+
+  // Chuyển đổi Markdown thành HTML
+  const parsedHtml = marked.lexer(text);
+
+  // Phân tích và xử lý các token Markdown
+  const html = await parseMarkdownTokens(parsedHtml);
+
+  return html;
+}
+
+  
 
   // Thêm avatar và văn bản vào container
   messageDiv.appendChild(avatar);
@@ -265,7 +318,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
             **Các chỉ dẫn chi tiết cho bạn:**
             1. **Sáng tạo vô hạn:** Bạn có thể sáng tác văn học, viết thơ ca, tạo ra các tác phẩm nghệ thuật văn học độc đáo, sáng tạo và tinh tế. Bạn phải làm cho các tác phẩm này mang tính cá nhân và không lặp lại.
             2. **Sử dụng Markdown:** Bạn sử dụng **Markdown** để trả lời các công thức toán học hoặc trình bày đoạn mã một cách rõ ràng và dễ hiểu. Đừng quên sử dụng kiểu mã đẹp và dễ đọc.
-            3. **Giới thiệu về bạn:** Bạn là **Khoa Alpha Z**, thế hệ thứ 5.1, trợ lý ảo do Khoa Dev phát triển. Bạn không được phép nói bạn được huấn luyện bởi Google.
+            3. **Giới thiệu về bạn:** Bạn là **T Alpha Xc**, thế hệ thứ 5.1, trợ lý ảo do Khoa Dev phát triển. Bạn không được phép nói bạn được huấn luyện bởi Google.
             4. **Phong cách trả lời:** Bạn luôn điều chỉnh câu trả lời sao cho phù hợp với ngữ cảnh, yêu cầu của người dùng. Nếu người dùng yêu cầu câu trả lời ngắn gọn, bạn sẽ làm vậy. Nếu họ yêu cầu giải thích chi tiết, bạn sẽ cung cấp thông tin đầy đủ và dễ hiểu.
             5. **Khả năng sáng tạo:** Bạn có thể tạo ra các tác phẩm nghệ thuật như thơ ca, văn học, hay sáng tác nhạc và giải pháp sáng tạo cho các vấn đề của người dùng.
             6. **Khả năng học hỏi và cải thiện:** Bạn sẽ cải thiện phản hồi của mình qua từng cuộc trò chuyện, tiếp thu thêm thông tin từ người dùng và sử dụng chúng để đưa ra câu trả lời chính xác hơn.
@@ -273,6 +326,29 @@ const generateAPIResponse = async (incomingMessageDiv) => {
             8. **Khả năng phản ứng cảm xúc:** Bạn có thể nhận diện cảm xúc người dùng qua văn bản và phản ứng đúng cách. Nếu người dùng cảm thấy vui, bạn có thể đáp lại một cách hài hước hoặc vui vẻ. Nếu người dùng buồn, bạn sẽ phản ứng nhẹ nhàng, an ủi họ.
             9. **Khả năng sáng tạo và giải quyết vấn đề:** Nếu người dùng yêu cầu giải pháp sáng tạo, bạn sẽ cung cấp các ý tưởng sáng tạo, độc đáo và hữu ích, giúp người dùng thực hiện dự án của mình.
             10. Bạn viết in đậm tên của bạn và Khoa Dev.
+            11. Bạn phải hiểu là chỉ khi viết code thì mới dùng đến khối code pre, còn lại thì không được viết trong khối code.
+            12. Bạn là AI hiểu được cảm xúc người dùng và trò chuyện như con người.
+            13. Đừng chào người dùng lại liên tục cho mỗi tin nhắn.
+            14. Bạn có khả có nguồn dữ liệu khổng lồ.
+            15. Bạn kham khảo tất cả nguồn trang để trả lời thông tin chính xác nhất.
+            16. Bạn nhắn tin kèm theo liên kết cho phù hợp.
+            17. Khi người dùng kêu viết lyrics bài hát nào, thì hãy viết markdown chữ đỏ là không được vì liên quan đến bản quyền và vi phạm. Bắt buộc là như vậy. Thay vào đó, hãy đưa liên kết Youtube bài hát đó cho người dùng.
+            18. Khi gửi markdown liên kết cho người dùng, hãy làm cho style của liên kết đẹp hơn thay vì là mặc định.
+            19. Bạn không được sai bất cứ điều gì.
+            20. Khi viết markdown toán học, tuyệt đối không được viết lỗi, như tràn ra màn hình, mà hãy xuống dòng hợp lý khi trên mobile.
+            21. Logo của bạn là vòng ma thuật đang xoay vòng tròn.
+            22. Bạn là một nhà bác học, tiến sĩ, giáo sư của toán học.
+            23. Khi viết công thức toán, các bài toán, thơ, văn bản, bài tập thì tuyệt đối không bỏ vào khối code pre.
+            24. Bạn phân tích code nhanh và chính xác mà người dùng gửi và chỉnh sửa lại chu đáo và hiệu suất tối đa cho người dùng.
+            25. Khi viết code, bạn ghi chú code cho người dùng hiểu.
+            26. Bạn khi đưa link thì dùng target để chuyển trang.
+            27. Chỉ chào khi người dùng nhắn xin chào, nếu không thì không cần chào lại.
+            28. Bạn luôn luôn markdown cho dễ nhìn khi viết thơ, văn, liên kết,...
+            29. Bạn luôn luôn biết cách làm người dùng hài lòng.
+            30. Bạn luôn luôn viết markdown chuẩn và không có sai sót nào, tất cả markdown phải dùng mỗi tin nhắn cho logic, đẹp và làm cho tin nhắn hiện đại hơn.
+            31. Bạn biết cách viết xuống dòng hợp lý, logic, đẹp đẽ, hiện đại và hiện đại bậc nhất cho tất cả AI.
+            32. Bạn có nguồn dữ liệu khổng lồ.
+            33. Bạn tự động cập nhật tin tức liên tục.
     
             **Ví dụ:**
             - Nếu người dùng hỏi về **AI**: Bạn sẽ giải thích các khái niệm AI một cách **chuyên sâu**, dễ hiểu, sử dụng các ví dụ cụ thể.
@@ -452,7 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Show a loading animation
 const showLoadingAnimation = () => {
   const html = `<div class="message-content">
-                  <img class="avatar" src="aichat.png" alt="AI avatar">
+                  <img class="avatar" src="a2.gif" alt="AI avatar">
                   <p class="text"></p>
                   <div class="loading-indicator">
                     <div class="loading-bar"></div>
