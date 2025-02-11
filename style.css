@@ -240,7 +240,34 @@ body.hide-header .header {
 }
 
 .chat-list .message.loading .avatar {
-  animation: rotate 3s linear infinite;
+  animation: thinking 1.5s ease-in-out infinite;
+}
+
+@keyframes thinking {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  20% {
+    transform: rotate(15deg) scale(1.1);
+    opacity: 0.9;
+  }
+  40% {
+    transform: rotate(-15deg) scale(1.15);
+    opacity: 0.85;
+  }
+  60% {
+    transform: rotate(10deg) scale(1.12);
+    opacity: 0.9;
+  }
+  80% {
+    transform: rotate(-10deg) scale(1.08);
+    opacity: 0.95;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
 }
 
 
@@ -266,6 +293,41 @@ body.hide-header .header {
 
 .chat-list .message:not(.loading, .error):hover .icon:not(.hide){
   visibility: visible;
+}
+/* Kiểu cho phần văn bản disclaimer-text */
+.disclaimer-text {
+  font-family: 'Arial', sans-serif; /* Chọn font chữ dễ đọc */
+  font-size: 14px; /* Điều chỉnh kích thước chữ */
+  color: #333333; /* Màu chữ tối cho dễ nhìn */
+  padding: 10px; /* Khoảng cách giữa các phần tử và viền */
+  border-radius: 8px; /* Bo góc cho phần văn bản */
+  text-align: center; /* Căn giữa phần văn bản */
+  margin-top: 20px; /* Khoảng cách phía trên */
+}
+
+/* Kiểu cho đường link */
+.disclaimer-text a {
+  color: #007bff; /* Màu xanh cho liên kết */
+  text-decoration: none; /* Loại bỏ gạch dưới */
+  font-weight: bold; /* Làm cho chữ in đậm */
+}
+
+/* Thêm hiệu ứng khi di chuột qua đường link */
+.disclaimer-text a:hover {
+  text-decoration: underline; /* Gạch dưới khi di chuột */
+}
+
+/* Kiểu cho biểu tượng model-icon */
+.model-icon {
+  width: 20px; /* Chiều rộng cho biểu tượng */
+  height: 20px; /* Chiều cao cho biểu tượng */
+  vertical-align: middle; /* Căn giữa biểu tượng với văn bản */
+  margin-left: 5px; /* Khoảng cách giữa biểu tượng và văn bản */
+}
+
+/* Kiểu cho phần cuối văn bản */
+.disclaimer-text br {
+  margin-bottom: 10px; /* Khoảng cách giữa các dòng */
 }
 
 .chat-list .message .icon:hover {
@@ -385,6 +447,7 @@ body.hide-header .header {
   padding: 1.1rem 4rem 1.1rem 1.5rem;
   border-radius: 100px;
   background: var(--secondary-color);
+  transition: background 0.2s ease; /* Added smooth transition for background change */
 }
 
 .typing-form .typing-input:focus {
@@ -393,6 +456,7 @@ body.hide-header .header {
 
 .typing-form .typing-input::placeholder {
   color: var(--placeholder-color);
+  opacity: 0.7; /* Slightly reduced opacity for placeholder text for a subtle effect */
 }
 
 .typing-area .icon {
@@ -407,8 +471,14 @@ body.hide-header .header {
   align-items: center;
   justify-content: center;
   background: var(--secondary-color);
-  transition: 0.2s ease;
+  transition: background 0.3s ease, transform 0.2s ease; /* Added transform effect */
 }
+
+.typing-area .icon:hover {
+  background: var(--secondary-hover-color);
+  transform: scale(1.1); /* Added subtle scaling effect on hover */
+}
+
 
 .typing-area .icon:hover {
   background: var(--secondary-hover-color);
@@ -416,7 +486,8 @@ body.hide-header .header {
 
 .typing-form #send-message-button {
   position: absolute;
-  right: 0;
+  right: 23px;
+  bottom: 3px;
   outline: none;
   border: none;
   transform: scale(0);
@@ -460,8 +531,20 @@ body.hide-header .header {
   }
 
   .typing-form .input-wrapper {
-    height: 42px; /* Giảm chiều cao để phù hợp hơn với màn hình nhỏ */
+    height: 42px; /* Smaller height for better fit on smaller screens */
+    max-height: 50px; /* Max height to ensure it doesn't become too small on larger screens */
+    padding: 0 1rem; /* Added padding to ensure the input has some space on both sides */
+    display: flex;
+    align-items: center; /* Centers the input vertically */
+    box-sizing: border-box; /* Ensures padding doesn't increase the overall height */
   }
+  
+  @media (max-width: 480px) {
+    .typing-form .input-wrapper {
+      height: 36px; /* Slightly smaller height on very small screens */
+    }
+  }
+  
 
   .typing-form .typing-input {
     padding: 0.7rem 2.6rem 0.7rem 1rem; /* Điều chỉnh padding để không bị chật */
@@ -486,36 +569,48 @@ body.hide-header .header {
 
 /* Đảm bảo khung chat không bị tràn */
 .message {
-  max-width: 90%; /* Giới hạn độ rộng tin nhắn */
-  word-wrap: break-word; /* Xuống dòng khi cần */
-  overflow-wrap: break-word;
+  max-width: 90%;            /* Giới hạn độ rộng tin nhắn */
+  word-wrap: break-word;     /* Xuống dòng khi cần thiết */
+  overflow-wrap: break-word; /* Đảm bảo từ dài không tràn ra ngoài */
+  white-space: normal;       /* Đảm bảo văn bản có thể xuống dòng tự nhiên */
+  line-height: 1.5;          /* Cải thiện khoảng cách giữa các dòng cho dễ đọc */
+  padding: 8px;              /* Thêm khoảng cách bên trong tin nhắn */
+  background-color: #f9f9f9; /* Màu nền nhẹ cho tin nhắn */
+  border-radius: 10px;       /* Bo góc cho tin nhắn */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Tạo bóng nhẹ cho tin nhắn */
 }
 
+
+/* Giữ code trong khung, cho phép cuộn ngang nếu cần */
 /* Giữ code trong khung, cho phép cuộn ngang nếu cần */
 pre {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  background: #2b2b2b;
-  color: #f8f8f2;
+  background-color: #2b2b2b; /* Nền tối */
+  color: #f8f8f2; /* Màu chữ sáng */
   padding: 12px;
   border-radius: 8px;
   overflow-x: auto; /* Kích hoạt cuộn ngang */
   white-space: pre-wrap; /* Cho phép xuống dòng */
-  word-break: break-word;
+  word-break: break-word; /* Ngắt từ khi cần thiết */
   max-width: 100%; /* Giữ code trong khung chat */
-  border: 1px solid #444;
+  border: 1px solid #444; /* Viền tối nhẹ */
+  line-height: 1.5; /* Tăng khoảng cách dòng cho dễ đọc */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm bóng nhẹ */
 }
 
 /* Cố định kích thước khối code trong chat */
 code {
-  background: #2d2d2d; /* Màu xám đậm */
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  color: #cfc2cc;
+  background-color: #2d2d2d; /* Màu xám đậm */
+  font-family: "Courier New", monospace; /* Font monospace cho code */
+  color: #cfc2cc; /* Màu chữ xám sáng */
   padding: 4px 8px;
   border-radius: 4px;
-  font-family: "Courier New", monospace;
+  font-size: 0.95em; /* Kích thước chữ vừa phải */
   max-width: 100%;
-  word-wrap: break-word;
+  word-wrap: break-word; /* Ngắt từ khi cần thiết */
+  display: inline-block; /* Đảm bảo code không bị giãn ra */
 }
+
 
 .hljs-keyword { color: #569CD6; } /* Từ khóa */
 .hljs-string { color: #CE9178; } /* Chuỗi */
@@ -610,12 +705,18 @@ code {
   height: 100px;
   vertical-align: middle; /* Căn giữa với chữ */
   margin-left: 5px; /* Tạo khoảng cách với chữ */
+  animation: rainbow 3s linear infinite;
 }
 .disclaimer-text .model-icon {
   width: 30px;  /* Điều chỉnh kích thước */
   height: 30px;
   vertical-align: middle; /* Căn giữa với chữ */
   margin-left: 5px; /* Tạo khoảng cách với chữ */
+}
+@keyframes rainbow {
+  0% { filter: hue-rotate(0deg) brightness(1) saturate(1.2); }
+  50% { filter: hue-rotate(180deg) brightness(1.2) saturate(1.5); }
+  100% { filter: hue-rotate(360deg) brightness(1) saturate(1.2); }
 }
 /* Ví dụ CSS */
 .hljs {
