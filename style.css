@@ -80,6 +80,7 @@ body {
 }
 #mic-button.active {
   color: red; /* Đổi màu đỏ khi đang nghe */
+  
   animation: pulse 1s infinite;
 }
 
@@ -107,6 +108,7 @@ body.hide-header .header {
 }
 .facebook-icon {
   position: absolute;
+  user-select: none; /* Ngừng chọn văn bản */
   top: 20px;
   right: 20px;
   text-decoration: none;
@@ -116,6 +118,7 @@ body.hide-header .header {
 
 .facebook-icon:hover {
   color: #0d5bd7; /* Màu đậm hơn khi hover */
+  user-select: none; /* Ngừng chọn văn bản */
 }
 
 .header {
@@ -128,7 +131,7 @@ body.hide-header .header {
 .header .title {
   font-size: 3rem;
   font-weight: bold;
-  background: linear-gradient(135deg, #1e3a8a, #3b82f6, #ff6bcb, #f43f5e);
+  background: linear-gradient(135deg, #9b59b6, #f39c12, #d35400, #8e44ad, #2980b9, #e74c3c, #2c3e50);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
  
@@ -174,12 +177,14 @@ body.hide-header .header {
 
 .suggestion-list .suggestion :where(.text, .icon) {
   font-weight: 400;
+  user-select: none; /* Ngừng chọn văn bản */
   color: var(--text-color);
 }
 
 .suggestion-list .suggestion .icon {
   width: 42px;
   height: 42px;
+  user-select: none; /* Ngừng chọn văn bản */
   display: flex;
   font-size: 1.3rem;
   margin-top: 2.5rem;
@@ -242,7 +247,10 @@ body.hide-header .header {
 .chat-list .message.loading .avatar {
   animation: thinking 1.5s ease-in-out infinite;
 }
-
+.avatar{
+  user-select: none;
+  pointer-events: none; /* Ngừng di chuyển hoặc kéo hình ảnh */
+}
 @keyframes thinking {
   0% {
     transform: rotate(0deg) scale(1);
@@ -352,7 +360,7 @@ body.hide-header .header {
 /* Phần loading indicator */
 .chat-list .message .loading-indicator {
   display: none;
-  gap: 1rem; /* Tăng khoảng cách giữa các phần tử */
+  gap: 1rem;
   width: 100%;
   flex-direction: column;
 }
@@ -365,12 +373,12 @@ body.hide-header .header {
   height: 12px;
   width: 100%;
   border-radius: 1rem;
-  background: linear-gradient(90deg, #4e73df, #ff56a1, #4e73df);
+  background: linear-gradient(135deg, #9b59b6, #f39c12, #d35400, #8e44ad, #2980b9, #e74c3c, #2c3e50);
   background-size: 400% 400%;
   animation: smoothGradient 4s ease-in-out infinite, waveEffect 1.5s ease-in-out infinite;
   position: relative;
   overflow: hidden;
- 
+  box-shadow: 0 0 15px rgba(0, 255, 100, 0.7);
 }
 
 @keyframes smoothGradient {
@@ -381,11 +389,11 @@ body.hide-header .header {
 
 @keyframes waveEffect {
   0% { transform: scaleY(1); opacity: 1; }
-  50% { transform: scaleY(1.05); opacity: 0.75; }
+  50% { transform: scaleY(1.1); opacity: 0.6; }
   100% { transform: scaleY(1); opacity: 1; }
 }
 
-/* Hiệu ứng shine */
+/* Hiệu ứng ánh sáng ma quái */
 .chat-list .message .loading-indicator .loading-bar::after {
   content: "";
   position: absolute;
@@ -393,16 +401,17 @@ body.hide-header .header {
   left: -100%;
   width: 50%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.5); /* Tăng độ sáng của ánh sáng */
-  filter: blur(12px); /* Tinh chỉnh độ mờ cho hiệu ứng ánh sáng mềm mại */
+  background: rgba(0, 255, 100, 0.5);
+  filter: blur(15px);
   animation: shineEffect 1.5s ease-in-out infinite;
 }
 
 @keyframes shineEffect {
-  0% { left: -100%; opacity: 0.8; }
-  50% { left: 50%; opacity: 0.3; }
-  100% { left: 150%; opacity: 0.8; }
+  0% { left: -100%; opacity: 0.9; }
+  50% { left: 50%; opacity: 0.4; }
+  100% { left: 150%; opacity: 0.9; }
 }
+
 
 
 
@@ -418,12 +427,24 @@ body.hide-header .header {
 .typing-area {
   position: fixed;
   width: 100%;
+  min-height: 50px; /* Đảm bảo có chiều cao tối thiểu khi không có văn bản */
   left: 0;
   bottom: 0;
+  user-select: none; /* Không thể chọn hình ảnh */
   padding: 1rem;
   background: var(--primary-color);
 }
 
+.typing-input {
+  width: 100%;
+  min-height: 50px; /* Đảm bảo có chiều cao tối thiểu khi không có văn bản */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: none; /* Không cho phép người dùng thay đổi kích thước thủ công */
+  box-sizing: border-box;
+}
 .typing-area :where(.typing-form, .action-buttons) {
   display: flex;
   gap: 0.75rem;
@@ -432,6 +453,7 @@ body.hide-header .header {
 .typing-form .input-wrapper {
   width: 100%;
   height: 56px;
+  user-select: none; /* Không thể chọn hình ảnh */
   display: flex;
   position: relative;
 }
@@ -463,6 +485,8 @@ body.hide-header .header {
   width: 56px;
   height: 56px;
   flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent; /* Xóa màu xanh khi nhấn vào icon trên di động */
+    outline: none; /* Loại bỏ viền focus khi nhấn */
   cursor: pointer;
   border-radius: 50%;
   display: flex;
@@ -680,7 +704,7 @@ code {
 }
 
 #cancelDelete {
-  background: linear-gradient(45deg, #e91e63, #1a73e8); /* Hồng và xanh dương */
+  background: red;
 }
 
 .modal button:hover {
