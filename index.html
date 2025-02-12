@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Khoa OpAI</title>
+  <title>Hyperion-X</title>
+  
+  <!-- Thêm biểu tượng favicon -->
+  <link rel="icon" href="aichat.png" type="image/x-icon">
   <!-- Linking Google Fonts For Icons -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <link rel="stylesheet" href="style.css">
@@ -84,9 +87,33 @@ window.MathJax = {
 
     <!-- Header Greetings -->
     <h1 class="title">
-       T Alpha Xc 🌸
-      
+      Hyperion-X <img src="a2.gif" alt="AI avatar">
     </h1>
+    
+    <style>
+      .title {
+        display: flex;  /* Sử dụng Flexbox để căn chỉnh chữ và hình ảnh */
+        align-items: center; /* Căn giữa hình ảnh và chữ theo chiều dọc */
+        pointer-events: none; /* Ngừng di chuyển hoặc kéo hình ảnh */
+
+      }
+    
+      .title img {
+        width: 45px;  /* Chỉnh kích thước hình ảnh nhỏ lại (bạn có thể điều chỉnh theo ý muốn) */
+        pointer-events: none; /* Ngừng di chuyển hoặc kéo hình ảnh */
+
+        height: auto; /* Giữ tỷ lệ gốc của hình ảnh */
+        margin-left: 10px; /* Khoảng cách giữa chữ và hình ảnh */
+      }
+    </style>
+    
+    
+    <style>
+      .title {
+        user-select: none; /* Vô hiệu hóa việc chọn văn bản */
+      }
+    </style>
+    
     
     
 <br>
@@ -119,7 +146,7 @@ window.MathJax = {
   <div class="typing-area">
     <form action="#" class="typing-form">
       <div class="input-wrapper">
-    <textarea placeholder="Hỏi T Alpha Xc" class="typing-input" required></textarea>
+    <textarea placeholder="Hỏi Dominion X" class="typing-input" required></textarea>
     <button id="send-message-button" class="icon material-symbols-rounded">send</button>
 </div>
 
@@ -138,9 +165,32 @@ window.MathJax = {
       </div>
     </form>
     <p class="disclaimer-text">
-      T Alpha Xc có thể mắc lỗi. Hãy kiểm tra thông tin quan trọng.
-      <a href="https://www.facebook.com/profile.php?id=61571026329735" target="_blank">Tìm hiểu thêm</a>
+      Hyperion-X có thể mắc lỗi. 
+      <a href="https://www.facebook.com/profile.php?id=61571026329735" target="_blank" class="styled-link">Tìm hiểu thêm</a>
     </p>
+    
+    <style>
+      .styled-link {
+        color: #3498db; /* Màu xanh dương */
+        text-decoration: none; /* Loại bỏ gạch dưới */
+        user-select: none; /* Vô hiệu hóa việc chọn văn bản */
+        font-weight: bold; /* Chữ đậm */
+      }
+    
+      .styled-link:hover {
+        color: #e74c3c; /* Màu đỏ khi di chuột */
+        user-select: none; /* Vô hiệu hóa việc chọn văn bản */
+        text-decoration: underline; /* Gạch dưới khi di chuột */
+      }
+    
+      .disclaimer-text {
+        font-family: Arial, sans-serif;
+        user-select: none; /* Vô hiệu hóa việc chọn văn bản */
+        font-size: 14px;
+        color: #333; /* Màu chữ đen xám */
+      }
+    </style>
+    
     
   </div>
 
